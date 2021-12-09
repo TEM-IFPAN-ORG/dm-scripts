@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------
-// AutoScannDiff v5.3
+// AutoScannDiff v5.5
 // Script by K. Morawiec and S. Kryvyi
 // Based on "CBED stack process" by S. Kryvyi
 //--------------------------------------------------------------------
@@ -237,11 +237,9 @@ class AutoScanDiffDialog : UIFrame
 		
 		image diff_image = CM_CreateImageForAcquire(camera, acq_params, "Diff. image")
 		GetSize(diff_image, img_width, img_height)
-		image diff_stack = RealImage("Diff. stack", 4, img_width, img_height, n_images)
 		image acq_image = CreateByteImage("Acquire image", n_cols, n_rows)
 		
 		ConvertToLong(diff_image)
-		ConvertToLong(diff_stack)
 		ConvertToByte(acq_image)
 		
 		// Get the scale of image dimensions (the size of pixel).
@@ -257,14 +255,20 @@ class AutoScanDiffDialog : UIFrame
 		step_x = roi_w / n_cols
 		step_y = roi_h / n_rows
 		
-		number i = 0
 		number beam_check = 0
 		
+		//string save_path = DlgGetStringValue(self.LookUpElement("SavePath"))
+		string save_path, filename
+		
+		if(!SaveAsDialog("Select destination", "diff_stack", save_path)) exit(0)
+		
 		ShowImage(acq_image)
-		ShowImage(diff_stack)
 		
 		for(number row=0; row<n_rows; row++)
 		{
+			image diff_stack = RealImage("Diff. stack", 4, img_width, img_height, n_cols)
+			ConvertToLong(diff_stack)
+			
 			for(number col=0; col<n_cols; col++)
 			{	
 				// Determine the new beam position in raster.
@@ -289,6 +293,7 @@ class AutoScanDiffDialog : UIFrame
 				
 				if(integrate(central_beam) > ref_threshold)
 				{
+					diff_stack[0, 0, col, img_width, img_height, col+1] = diff_image
 					continue
 				}
 				
@@ -297,34 +302,27 @@ class AutoScanDiffDialog : UIFrame
 				CM_AcquireImage(camera, acq_params, diff_image)
 				
 				// Add image to the stack. Modify acq_image to indicate if the image was acquired.
-				diff_stack[0, 0, i, img_width, img_height, i+1] = diff_image
+				diff_stack[0, 0, col, img_width, img_height, col+1] = diff_image
 				acq_image[col, row] = 1
 				
 				UpdateImage(acq_image)
-				UpdateImage(diff_stack)
-				i++
 			}
+			
+			// Set x,y scale (and units) of the image stack.
+			ImageSetDimensionScale(diff_stack, 0, px_width)
+			ImageSetDimensionScale(diff_stack, 1, px_height)
+			
+			ImageSetDimensionUnitString(diff_stack, 0, px_units)
+			ImageSetDimensionUnitString(diff_stack, 1, px_units)
+			
+			string zero = "_"
+			if(row < 9) zero = "_0"
+			filename = save_path + zero + (row+1) + ".dm3"
+			SaveAsGatan(diff_stack, filename)
 		}
 		
 		// End communication with TIA.
 		ReleaseTIA()
-		
-		// Set x,y scale (and units) of the image stack.
-		ImageSetDimensionScale(diff_stack, 0, px_width)
-		ImageSetDimensionScale(diff_stack, 1, px_height)
-		
-		ImageSetDimensionUnitString(diff_stack, 0, px_units)
-		ImageSetDimensionUnitString(diff_stack, 1, px_units)
-		
-		/*
-		String write_path = GetApplicationDirectory(2, 0)
-		String dm3_file = write_path + "diff_stack.dm3"
-		
-		SaveAsGatan(diff_stack, dm3_file)
-		*/
-		
-		//ShowImage(acq_image)
-		//ShowImage(diff_stack)
 	}
 	
 	// Create dialog box with items related to acquisition of reference image in vacuum and
@@ -393,10 +391,13 @@ class AutoScanDiffDialog : UIFrame
 		
 		number low_exp_time, norm_exp_time
 		number n_rows, n_cols
+		//string save_path
+		
 		taggroup low_exp_time_field = DlgCreateRealField(low_exp_time, 8, 1).DlgIdentifier("LowExpTime").DlgValue(0.01)
 		taggroup norm_exp_time_field = DlgCreateRealField(norm_exp_time, 8, 1).DlgIdentifier("NormExpTime").DlgValue(0.1)
 		taggroup n_rows_field = DlgCreateIntegerField(n_rows, 8).DlgIdentifier("NumOfRows").DlgValue(10)
 		taggroup n_cols_field = DlgCreateIntegerField(n_cols, 8).DlgIdentifier("NumOfCols").DlgValue(10)
+		//taggroup save_path_field = DlgCreateStringField(save_path, 20).DlgIdentifier("SavePath").DlgValue("C:\\test\\")
 		
 		taggroup auto_scan_group1, auto_scan_group2, auto_scan_group3
 		auto_scan_group1 = DlgGroupItems(low_exp_time_label, low_exp_time_field, norm_exp_time_label, norm_exp_time_field).DlgTableLayout(2, 2, 0)
@@ -405,6 +406,7 @@ class AutoScanDiffDialog : UIFrame
 		auto_scan_box_items.DlgAddElement(auto_scan_group1)
 		auto_scan_box_items.DlgAddElement(n_x_m_label)
 		auto_scan_box_items.DlgAddElement(auto_scan_group2)
+		//auto_scan_box_items.DlgAddElement(save_path_field)
 		auto_scan_box_items.DlgAddElement(start_auto_scan_button)
 		
 		return auto_scan_box
