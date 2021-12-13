@@ -1,3 +1,8 @@
+//----------------------------------------------------------------
+// DM_EELS.s
+// Script by K. Morawiec
+//----------------------------------------------------------------
+
 // function declarations
 void CreateMainDialog(Object dialog_frame, TagGroup exposure_field, TagGroup n_frames_field);
 void ShowParams(Object acq_params);
