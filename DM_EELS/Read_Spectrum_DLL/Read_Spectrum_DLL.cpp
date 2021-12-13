@@ -1,3 +1,8 @@
+//--------------------------------------------------------
+// Read_Spectrum_DLL.cpp
+// Author: Krzysztof Morawiec
+//--------------------------------------------------------
+
 #include "Read_Spectrum_DLL.h"
 #include "PEELS_Shift.h"
 

@@ -1,3 +1,8 @@
+//--------------------------------------------------------------
+// PEELS_Shift.h
+// Author: Krzysztof Morawiec
+//--------------------------------------------------------------
+
 #include <iostream>
 
 int get_max_idx(float *data, int size);

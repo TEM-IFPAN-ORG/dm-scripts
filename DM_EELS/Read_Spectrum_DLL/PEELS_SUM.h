@@ -1,3 +1,8 @@
+//--------------------------------------------------------
+// PEELS_SUM.h
+// Author: Krzysztof Morawiec
+//--------------------------------------------------------
+
 #include <iostream>
 #include <string>
 #include <vector>

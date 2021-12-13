@@ -1,3 +1,8 @@
+//-------------------------------------------------------------------
+// SaveImagesAsDateTime.s
+// Script by K. Morawiec
+//-------------------------------------------------------------------
+
 void SaveAsFnDateTime()
 {
 	number n_imgs = CountImages()

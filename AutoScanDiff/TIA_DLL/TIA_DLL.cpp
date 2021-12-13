@@ -1,3 +1,8 @@
+//--------------------------------------------------------
+// TIA_DLL.cpp
+// Author: Krzysztof Morawiec
+//--------------------------------------------------------
+
 #include "TIA_DLL.h"
 using namespace Gatan;
 

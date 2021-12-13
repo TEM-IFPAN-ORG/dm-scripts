@@ -1,3 +1,8 @@
+//--------------------------------------------------------------
+// PEELS_Shift.cpp
+// Author: Krzysztof Morawiec
+//--------------------------------------------------------------
+
 #include "PEELS_Shift.h"
 using namespace std;
 

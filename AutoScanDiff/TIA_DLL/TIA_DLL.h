@@ -1,3 +1,8 @@
+//--------------------------------------------------------
+// TIA_DLL.h
+// Author: Krzysztof Morawiec
+//--------------------------------------------------------
+
 #import "C:\Program Files\FEI\TIA\bin\ESVision.tlb"
 
 #define _GATAN_USE_STL_STRING

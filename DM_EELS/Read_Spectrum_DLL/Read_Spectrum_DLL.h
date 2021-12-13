@@ -1,3 +1,8 @@
+//--------------------------------------------------------
+// Read_Spectrum_DLL.h
+// Author: Krzysztof Morawiec
+//--------------------------------------------------------
+
 #define _GATAN_USE_STL_STRING
 
 #include "DMPlugInBasic.h"
